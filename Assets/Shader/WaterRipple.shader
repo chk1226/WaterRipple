@@ -1,12 +1,12 @@
-﻿Shader "Unlit/WaterRipple"
+﻿Shader "My/WaterRipple"
 {
 	Properties
 	{
 		_MainTex ("Texture", 2D) = "white" {}
-		_Wavelength("Wavelength", float) = 3
-		_Amplitude("Amplitude", float) = 0.1
-		_Speed("_Speed", float) = 1.82
-		_Speed("_StartPos",Vector) = (0,0,0,0)
+		_Frequency("Frequency", float) 		= 2.5
+		_Amplitude("Amplitude", float) 		= 0.1
+		_Speed("_Speed", float) 			= 1.82
+		//_StartPos("_StartPos",Vector) 		= (0,0,0,0)
 
 	}
 	SubShader
@@ -41,34 +41,52 @@
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
 
+			#define MAX_RIPPLE 2
+
 			// wave 
-			float _Wavelength;
+			float _Frequency;
 			float _Amplitude;
 			float _Speed;
-			Vector _StartPos;
+			float2 _StartPos[MAX_RIPPLE];
+			float _ScaleAry[MAX_RIPPLE];
 
-			float rippleSin(float2 offPos, float2 org)
+//			float rippleSin(float2 offPos, float2 org)
+//			{
+//				float d = distance (offPos, org);
+//				float w = 2 / _Wavelength;
+//				float miu = _Speed * w;
+
+//				float t = _Time.w;
+//				float r = d * w - t * miu;
+//				float h = _Amplitude * sin (r);
+//				return h;
+//			}
+
+			float rippleSin(float2 pos, float2 startPos)
 			{
-				float d = distance (offPos, org);
-				float w = 2 / _Wavelength;
-				float miu = _Speed * w;
-
-				float t = _Time.w;
-				float r = d * w - t * miu;
-				float h = _Amplitude * sin (r);
-				return h;
+				float offsetvert = (pos.x - startPos.x) * (pos.x - startPos.x) + (pos.y - startPos.y) * (pos.y - startPos.y);
+				return _Amplitude * sin(-_Time.w * _Speed + offsetvert * _Frequency);
 			}
-
 
 			v2f vert (appdata v)
 			{
 				v2f o;
 
-				v.vertex.y +=  
+				float value1 = rippleSin(float2(v.vertex.x, v.vertex.z), float2(_StartPos[0].x, _StartPos[0].y));
+				float value2 = rippleSin(float2(v.vertex.x, v.vertex.z), float2(_StartPos[1].x, _StartPos[1].y));
 
-				o.vertex 	= UnityObjectToClipPos(v.vertex);
+
+				v.vertex.y += value1 * _ScaleAry[0];
+				v.normal.y += value1 * _ScaleAry[0];
+				v.vertex.y += value2 * _ScaleAry[1];
+				v.normal.y += value2 * _ScaleAry[1];
+
+
+				o.vertex 	= mul(UNITY_MATRIX_MVP, v.vertex);
 				o.uv 		= TRANSFORM_TEX(v.uv, _MainTex);
-				o.color 	= mul(UNITY_MATRIX_IT_MV,v.normal) *0.5 +0.5;
+				o.color 	= mul(UNITY_MATRIX_IT_MV,v.normal) * 0.5 + 0.5;
+				//o.color 	= v.normal * 0.5 + 0.5;
+				
 				return o;
 			}
 			

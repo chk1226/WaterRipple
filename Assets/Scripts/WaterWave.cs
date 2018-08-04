@@ -10,19 +10,20 @@ public class WaterWave : MonoBehaviour {
 //	public float noiseWalk 		= 4.55f;	//1f;
 
 
-	public float Wavelength = 3;
-	public float Amplitude = 0.1f;
-	public float Speed = 1.82f;
+//	public float Wavelength = 3;
+//	public float Amplitude = 0.1f;
+//	public float Speed = 1.82f;
 
     private Mesh mesh;
+	private Material material;
     private Vector3[] vertexAry;
 	private int planeX;
 	private int planeY;
 
 
-	private float[] heightMapPre;
-	private float[] heightMapCur;
-	public float DRAG = 0.15f;
+//	private float[] heightMapPre;
+//	private float[] heightMapCur;
+//	public float DRAG = 0.15f;
 //	private float start = 10.0f;
 
 
@@ -33,12 +34,15 @@ public class WaterWave : MonoBehaviour {
         mesh = GetComponent<MeshFilter>().mesh;
         vertexAry = new Vector3[mesh.vertices.Length];
 
+		material = GetComponent<Renderer> ().material;
+
+
 		var createPlane = transform.parent.GetComponent<CreatePlane> ();
 		planeX = createPlane.lengthX;
 		planeY = createPlane.lengthY;
 
-		heightMapPre = new float[planeX * planeY];
-		heightMapCur = new float[planeX * planeY];
+//		heightMapPre = new float[planeX * planeY];
+//		heightMapCur = new float[planeX * planeY];
 
 	}
 	
@@ -70,7 +74,7 @@ public class WaterWave : MonoBehaviour {
 				//v.y += Mathf.PerlinNoise(v.x + noiseWalk, v.y + Mathf.Sin(Time.time * 0.1f)) * noiseStrength;
 
 				// plus ripple wave
-				v.y = heightMapCur[y * planeX + x];
+//				v.y = heightMapCur[y * planeX + x];
 
 				// sin ripple
 				//v.y = rippleSin(new Vector2(x,y), startPos);
@@ -88,7 +92,7 @@ public class WaterWave : MonoBehaviour {
 
 	void doRipple()
 	{
-
+		/*
 		for(int i = 1; i < planeY-1; i++)
 		{
 			for (int j = 1; j < planeX-1; j++) 
@@ -114,12 +118,13 @@ public class WaterWave : MonoBehaviour {
 
 			}
 		}
-
+*/
 	}
 
 
 	void swapRippleAry()
 	{
+		/*
 		// copy current to pre
 		for(int i = 0; i < planeY; i++)
 		{
@@ -130,6 +135,7 @@ public class WaterWave : MonoBehaviour {
 				heightMapCur [i * planeX + j] = temp;
 			}
 		}
+		*/
 	}
 
 	void mouseClick()
@@ -150,12 +156,14 @@ public class WaterWave : MonoBehaviour {
 //			}
 //		}
 
+		material.SetVector ("_StartPos", new Vector4(0.0f, 25.0f));
 
 //		startPos = new Vector2 (0.0f, 25.0f);
 	}
 
 	float rippleSin(Vector2 offPos, Vector2 org)
 	{
+		/*
 		float d = Vector2.Distance (offPos, org);
 		float w = 2 / Wavelength;
 		float miu = Speed * w;
@@ -166,6 +174,8 @@ public class WaterWave : MonoBehaviour {
 		float r = d * w -t * miu;
 		float h = Amplitude * Mathf.Sin (r);
 		return h;
+		*/
+		return 0;
 	}
 
 }
