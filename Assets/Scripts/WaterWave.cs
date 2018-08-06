@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class WaterWave : MonoBehaviour {
+
+	private readonly int MAX_WAVE_NUM = 2;
 
 //	public float scale 			= 0.11f;	// 10.0f;
 //	public float speed 			= 1.0f;		//1.0f;
@@ -26,8 +29,13 @@ public class WaterWave : MonoBehaviour {
 //	public float DRAG = 0.15f;
 //	private float start = 10.0f;
 
+	public Vector2[] startPos;
+	public List<float> scaleAry;
+	public int wavePtr = 0;
+	public List<float> distance;
+	public float waveSpeed = 0.08f;
 
-	private Vector2 startPos;
+	//private Vector2 startPos;
 
 	// Use this for initialization
 	void Start () {
@@ -44,6 +52,20 @@ public class WaterWave : MonoBehaviour {
 //		heightMapPre = new float[planeX * planeY];
 //		heightMapCur = new float[planeX * planeY];
 
+		startPos = new Vector2[MAX_WAVE_NUM];
+		startPos[0] = new Vector2 (0, 2.24f);
+		startPos[1] = new Vector2 (0, 3.5f);
+
+
+		scaleAry = new List<float>(MAX_WAVE_NUM);
+		for (int i = 0; i < MAX_WAVE_NUM; i++) {
+			scaleAry.Add (0);
+		}
+
+		distance = new List<float>(MAX_WAVE_NUM);
+		for (int i = 0; i < MAX_WAVE_NUM; i++) {
+			distance.Add (0);
+		}
 	}
 	
 	// Update is called once per frame
@@ -53,6 +75,7 @@ public class WaterWave : MonoBehaviour {
 			mouseClick ();
 		}
 
+		waveCalculation ();
 
 		vertexAry = mesh.vertices;
 
@@ -138,6 +161,50 @@ public class WaterWave : MonoBehaviour {
 		*/
 	}
 
+	public float reduceValue = 0.98f;
+	void waveCalculation()
+	{
+		for (int i = 0; i < scaleAry.Count; i++) {
+
+			if (scaleAry [i] == 0) {
+				continue;
+			}
+
+			scaleAry [i] *= reduceValue;
+			distance [i] += waveSpeed;
+
+			if (scaleAry [i] < 0.05f) {
+				scaleAry[i] = 0;
+				distance [i] = 0;
+			}
+		}
+
+		material.SetFloatArray ("_ScaleAry", scaleAry);
+		material.SetFloatArray ("_Distance", distance);
+
+
+	}
+
+	void addWave()
+	{
+		wavePtr = wavePtr % MAX_WAVE_NUM;
+
+		//scaleAry [wavePtr] = 1;
+		material.SetVector ("_StartPos" + wavePtr, new Vector4(startPos[wavePtr].x, 0, startPos[wavePtr].y));
+		if(wavePtr == 0)
+		{
+			scaleAry [wavePtr] = 1;
+		}
+		else if(wavePtr == 1)
+		{
+			scaleAry [wavePtr] = 2.0f;
+		}
+
+		material.SetFloatArray ("_ScaleAry", scaleAry);
+
+		wavePtr++;
+	}
+
 	void mouseClick()
 	{
 //		heightMapCur [1*planeX + 1] = start;
@@ -156,9 +223,10 @@ public class WaterWave : MonoBehaviour {
 //			}
 //		}
 
-		material.SetVector ("_StartPos", new Vector4(0.0f, 25.0f));
+		//material.SetVector ("_StartPos", new Vector4(0.0f, 25.0f));
 
 //		startPos = new Vector2 (0.0f, 25.0f);
+		addWave();
 	}
 
 	float rippleSin(Vector2 offPos, Vector2 org)
