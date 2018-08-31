@@ -73,10 +73,10 @@ Shader "My/WaterRipple"
 			{
 				float offsetvert = (pos.x - startPos.x) * (pos.x - startPos.x) + (pos.y - startPos.y) * (pos.y - startPos.y);
 
-				if(offsetvert > dist*dist)
-				{
-					return 0;
-				}
+				//if(offsetvert > dist*dist)
+				//{
+				//	return 0;
+				//}
 
 				return _Amplitude * sin(-_Time.w * _Speed + offsetvert * _Frequency);
 			}
@@ -89,10 +89,10 @@ Shader "My/WaterRipple"
 				float value2 = rippleSin(float2(v.vertex.x, v.vertex.z), float2(_StartPos1.x, _StartPos1.z), _Distance[1]);
 
 
-				v.vertex.y += value1 * _ScaleAry[0];
-				v.normal.y += value1 * _ScaleAry[0];
-				v.vertex.y += value2 * _ScaleAry[1];
-				v.normal.y += value2 * _ScaleAry[1];
+				v.vertex.y += value1;// * _ScaleAry[0];
+				v.normal.y += value1;// * _ScaleAry[0];
+				//v.vertex.y += value2 * _ScaleAry[1];
+				//v.normal.y += value2 * _ScaleAry[1];
 
 
 				o.vertex 	= UnityObjectToClipPos(v.vertex);

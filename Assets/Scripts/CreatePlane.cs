@@ -81,6 +81,6 @@ public class CreatePlane : MonoBehaviour {
 
 
 		// add cusom component
-		newMesh.AddComponent(typeof(WaterWave));
+		newMesh.AddComponent(typeof(WaterRippleByTexture));
 	}
 }

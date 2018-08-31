@@ -7,10 +7,10 @@ public class WaterWave : MonoBehaviour {
 
 	private readonly int MAX_WAVE_NUM = 2;
 
-//	public float scale 			= 0.11f;	// 10.0f;
-//	public float speed 			= 1.0f;		//1.0f;
-//	public float noiseStrength 	= 0.36f;	//4.0f;
-//	public float noiseWalk 		= 4.55f;	//1f;
+	public float scale 			= 0.11f;	// 10.0f;
+	public float speed 			= 1.0f;		//1.0f;
+	public float noiseStrength 	= 0.36f;	//4.0f;
+	public float noiseWalk 		= 4.55f;	//1f;
 
 
 //	public float Wavelength = 3;
@@ -80,7 +80,7 @@ public class WaterWave : MonoBehaviour {
 		vertexAry = mesh.vertices;
 
 		//doRipple ();
-		//randMove ();
+		randMove ();
 		//swapRippleAry ();
 
         mesh.vertices = vertexAry;
@@ -89,11 +89,11 @@ public class WaterWave : MonoBehaviour {
 
 	void randMove()
 	{
-		for (int y = 1; y < planeY - 1; y++) {
-			for (int x = 1; x < planeX - 1; x++) {
+		for (int y = 0; y < planeY; y++) {
+			for (int x = 0; x < planeX ; x++) {
 				var v = vertexAry[y * planeX + x];
 
-				//v.y = Mathf.Sin(Time.time * speed + v.x + v.y + v.z) * scale;
+				v.y = Mathf.Sin(Time.time * speed + v.x + v.y + v.z) * scale;
 				//v.y += Mathf.PerlinNoise(v.x + noiseWalk, v.y + Mathf.Sin(Time.time * 0.1f)) * noiseStrength;
 
 				// plus ripple wave
