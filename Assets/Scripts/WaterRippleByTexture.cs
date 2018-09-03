@@ -6,21 +6,20 @@ public class WaterRippleByTexture : MonoBehaviour {
 
 	public Texture2D    WaveTexture;
 	public GameObject   PlaneRoot;
-    public float        Amplitude       = 1.5f;
-    public Vector2      TitleWidth      = new Vector2(20, 20);
+    public float        Amplitude           = 1.5f;
+    public Vector2      TitleWidth          = new Vector2(20, 20);
 
-	private readonly int FPS 			= 30;
-    private readonly float WaitTime     = 1 / 30;
-    private readonly int TotalClip 		= 36;
-	private readonly int ClipWidth		= 128;
-	private readonly int ClipHeight		= 128;
-	private readonly int MaxWidthClip 	= 8;
-	private readonly int MaxHeightClip 	= 8;
+	private readonly int FPS 			    = 30;
+    private readonly float WaitTime         = 1 / 30;
+    private readonly int TotalClip 		    = 36;
+	private readonly int ClipWidth		    = 128;
+	private readonly int ClipHeight		    = 128;
+	private readonly int MaxWidthClip 	    = 8;
+	private readonly int MaxHeightClip 	    = 8;
     private readonly float OffsetColorValue = 0.623529f;
 
-
-
-    private Mesh mesh;
+    private Mesh topMesh;
+    private Mesh sideMesh;
 	private int planeX;
 	private int planeY;
     private Vector2 playWaveCenter;
@@ -49,7 +48,9 @@ public class WaterRippleByTexture : MonoBehaviour {
 
 		switch (step) {
 		case 0:
-			mesh = PlaneRoot.GetComponentsInChildren<MeshFilter>()[0].mesh;
+            var allMesh = PlaneRoot.GetComponentsInChildren<MeshFilter>();
+            topMesh = allMesh[0].mesh;
+            sideMesh = allMesh[1].mesh;
 			var createPlane = PlaneRoot.GetComponent<CreatePlane> ();
 			planeX = createPlane.lengthX;
 			planeY = createPlane.lengthY;
@@ -63,7 +64,8 @@ public class WaterRippleByTexture : MonoBehaviour {
 
 	IEnumerator PlayWave(Vector2 center)
 	{
-		var verAry = mesh.vertices;
+		var topVerAry = topMesh.vertices;
+        var sideVerAry = sideMesh.vertices;
         //var texData = WaveTexture.GetRawTextureData ();
         //Debug.Log ("texData size : " + texData.Length);
         //float rateX = WaveTexture.width / ((float)planeX * MaxWidthClip);
@@ -108,16 +110,27 @@ public class WaterRippleByTexture : MonoBehaviour {
                     //var value = WaveTexture.getp;
                     //verAry [x + y * planeX].y = value;
                     var value = (texData[basePos].r) - OffsetColorValue;
-                    verAry[nowX + nowY * planeX].y = value * Amplitude;
+                    topVerAry[nowX + nowY * planeX].y = value * Amplitude;
 
                     //Debug.Log (value);
+
+                    // side plane
+                    if(nowY == 0)
+                    {
+                        sideVerAry[nowX + nowY * planeX].z = value * Amplitude * -1;
+                    }
+
+
 
                 }
             }
 
 
-			mesh.vertices = verAry;
-			mesh.RecalculateNormals ();
+			topMesh.vertices = topVerAry;
+			topMesh.RecalculateNormals ();
+
+            sideMesh.vertices = sideVerAry;
+            sideMesh.RecalculateNormals();
 
             yield return new WaitForSeconds(WaitTime);
 		}
