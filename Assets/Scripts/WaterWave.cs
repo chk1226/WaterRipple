@@ -179,8 +179,8 @@ public class WaterWave : MonoBehaviour {
 			}
 		}
 
-		material.SetFloatArray ("_ScaleAry", scaleAry);
-		material.SetFloatArray ("_Distance", distance);
+		//material.SetFloatArray ("_ScaleAry", scaleAry);
+		//material.SetFloatArray ("_Distance", distance);
 
 
 	}
@@ -200,7 +200,7 @@ public class WaterWave : MonoBehaviour {
 			scaleAry [wavePtr] = 2.0f;
 		}
 
-		material.SetFloatArray ("_ScaleAry", scaleAry);
+		//material.SetFloatArray ("_ScaleAry", scaleAry);
 
 		wavePtr++;
 	}

@@ -17,10 +17,24 @@ public class CreatePlane : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		create ();
-	}
-	
-	void create()
+
+        // first plane
+		var newMesh = create ();
+        //把這個Mesh掛在當前物件底下
+        newMesh.transform.parent = this.transform;
+
+        // second plane
+        newMesh = create();
+        newMesh.transform.Rotate(90, 0, 180);
+        var pos = newMesh.transform.position;
+        pos.x = lengthY / 10;
+        newMesh.transform.position = pos;
+        //把這個Mesh掛在當前物件底下
+        newMesh.transform.parent = this.transform;
+
+    }
+
+    GameObject create()
 	{
 		//建立網格點座標陣列
 		matrix = new Vector3[lengthX * lengthY];
@@ -43,7 +57,7 @@ public class CreatePlane : MonoBehaviour {
 			{
 				vertices[y * lengthX + x] = matrix[y * lengthX + x];
 				norms[y * lengthX + x] = Vector3.up;
-				UVs[y * lengthX + x] = new Vector2((1/(float)(lengthX-1))*x , (1/(float)(lengthY-1))*y);
+                UVs[y * lengthX + x] = new Vector2((1 / (float)(lengthX - 1)) * x, (1 / (float)(lengthY - 1)) * y);
 			}
 		}
 
@@ -76,11 +90,7 @@ public class CreatePlane : MonoBehaviour {
 		mesh.uv = UVs;
 		mf.mesh = mesh;
 
-		//把這個Mesh掛在當前物件底下
-		newMesh.transform.parent = this.transform;
-
-
-		// add cusom component
-		newMesh.AddComponent(typeof(WaterRippleByTexture));
+        return newMesh;
+		
 	}
 }
