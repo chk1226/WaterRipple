@@ -2,6 +2,5 @@
 
 use sdk
 
-OpenTK
-
-ColladaMain
+* OpenTK
+* ColladaMain
